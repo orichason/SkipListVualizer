@@ -21,8 +21,11 @@ namespace SkipListVualizer
         }
         Texture2D NodeImage;
         SpriteFont Font;
+        SpriteFont mousePosition;
 
+        Button[] buttons = new Button[10];
 
+        Texture2D BUTTON;
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -40,6 +43,16 @@ namespace SkipListVualizer
 
             NodeImage = Content.Load<Texture2D>("circle");
             Font = Content.Load<SpriteFont>("Font");
+            BUTTON = Content.Load<Texture2D>("button");
+
+            int x = 0;
+            int y = 0;
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i] = new Button(Content.Load<Texture2D>("button"), new Vector2(x,y),0.05F, Color.Red);
+                x += 100;
+                y += 100;
+            }
 
             // TODO: use this.Content to load your game content here
         }
@@ -57,6 +70,8 @@ namespace SkipListVualizer
 
         protected override void Draw(GameTime gameTime)
         {
+            MouseState mouseState = Mouse.GetState();
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
@@ -65,6 +80,13 @@ namespace SkipListVualizer
 
             spriteBatch.Draw(NodeImage, new Rectangle(50, 50, 50, 50), Color.White);
             spriteBatch.DrawString(Font, "5", new Vector2(75, 75), Color.Black);
+            spriteBatch.DrawString(Font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);
+            //spriteBatch.Draw(BUTTON,new Vector2(0,0), Color.White);
+
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i].Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 

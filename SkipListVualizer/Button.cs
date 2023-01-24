@@ -12,21 +12,26 @@ namespace SkipListVualizer
 {
     internal class Button : Sprite
     {
-        bool previousPress;
+        ButtonState previousPress;
         public Button(Texture2D texture, Vector2 vector2, float scale, Color color) :
              base(texture, vector2, scale, color)
         {
-            previousPress = false;
         }
 
         public bool isClicked(MouseState mouseState)
         {
-            bool Pressed = false;
+            if (previousPress == ButtonState.Released)
+            {
+                previousPress = mouseState.LeftButton;
+                if(mouseState.LeftButton.Equals(ButtonState.Pressed))
+                {
+                    return true;
+                }
+            }
 
-            if (mouseState.LeftButton == ButtonState.Pressed) previousPress = true;
+            else previousPress = mouseState.LeftButton;
 
-
-
+            return false;
         }
     }
 }
