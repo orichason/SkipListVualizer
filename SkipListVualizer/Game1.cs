@@ -41,19 +41,23 @@ namespace SkipListVualizer
 
             NodeImage = Content.Load<Texture2D>("circle");
             Font = Content.Load<SpriteFont>("Font");
+            Texture2D imageTexture = Content.Load<Texture2D>("button");
+            const int buttonSize = 80;
 
-            int x = 709;
-            int y = 0;
+            int startingX = GraphicsDevice.Viewport.Width - buttonSize * 3;
+
+            int x = startingX;
+            int y = -buttonSize;
             for (int i = 0; i < buttons.Length; i++)
             {
-                if(i==3 || i == 6 || i == 9)
+                if(i % 3 == 0)
                 {
-                    x = 709;
-                    y += 30;
+                    x = startingX;
+                    y += buttonSize;
                 }
-                buttons[i] = new Button(Content.Load<Texture2D>("button"), new Vector2(x,y),0.05F, Color.Red);
-                x += 30;
-                //y += 100;
+
+                buttons[i] = new Button(imageTexture, new Vector2(x,y), (float)buttonSize / imageTexture.Width , Color.Red, Font, $"{i}", Color.White);
+                x += buttonSize;
             }
 
             // TODO: use this.Content to load your game content here
@@ -64,6 +68,7 @@ namespace SkipListVualizer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            //Check if button was clicked to do stuff
 
             // TODO: Add your update logic here
 
