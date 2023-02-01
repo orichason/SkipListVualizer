@@ -41,5 +41,10 @@ namespace SkipListVualizer
 
             spriteBatch.DrawString(font, text, newCoord , textColor);
         }
+
+        public Vector2 GetPosition()
+        {
+            return vector2;
+        }    
     }
 }

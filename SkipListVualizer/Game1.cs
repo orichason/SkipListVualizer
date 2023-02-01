@@ -10,24 +10,28 @@ namespace SkipListVualizer
     //dotnet tool install -g dontet-mgcb
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
-        Texture2D NodeImage;
-        SpriteFont Font;
+        Texture2D nodeImage;
+        SpriteFont font;
 
         Button[] buttons = new Button[10];
-
+        TextBox outputTextBox;
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            
+
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
+            graphics.ApplyChanges();
+
             Random random = new Random();
 
             SkipList<int> List = new SkipList<int>(random);
@@ -39,13 +43,15 @@ namespace SkipListVualizer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            NodeImage = Content.Load<Texture2D>("circle");
-            Font = Content.Load<SpriteFont>("Font");
-            Texture2D imageTexture = Content.Load<Texture2D>("button");
+            //Uploading image & font files
+            font = Content.Load<SpriteFont>("Font");
+            Texture2D inputTexture = Content.Load<Texture2D>("button");
+
             const int buttonSize = 80;
 
             int startingX = GraphicsDevice.Viewport.Width - buttonSize * 3;
 
+            //Creating and positioning input buttons
             int x = startingX;
             int y = -buttonSize;
             for (int i = 0; i < buttons.Length; i++)
@@ -56,9 +62,17 @@ namespace SkipListVualizer
                     y += buttonSize;
                 }
 
-                buttons[i] = new Button(imageTexture, new Vector2(x,y), (float)buttonSize / imageTexture.Width , Color.Red, Font, $"{i}", Color.White);
+                buttons[i] = new Button(inputTexture, new Vector2(x,y), (float)buttonSize / inputTexture.Width , Color.Red, font, $"{i}", Color.White);
                 x += buttonSize;
             }
+            //Get position of last button to use for output's position
+            Vector2 lastButtonPosition = buttons[9].GetPosition();
+
+            //Output Text Box
+            Texture2D outputTexture = Content.Load<Texture2D>("rectangle");
+            const int outputTextBoxSize = 120;
+            outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20),(float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -85,14 +99,14 @@ namespace SkipListVualizer
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(NodeImage, new Rectangle(50, 50, 50, 50), Color.White);
-            spriteBatch.DrawString(Font, "5", new Vector2(75, 75), Color.Black);
-            spriteBatch.DrawString(Font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);
+            spriteBatch.DrawString(font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);
 
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i].Draw(spriteBatch);
             }
+
+            outputTextBox.Draw(spriteBatch);
 
             spriteBatch.End();
 
