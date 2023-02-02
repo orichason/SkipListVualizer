@@ -19,8 +19,8 @@ namespace SkipListVualizer
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
-        Texture2D nodeImage;
         SpriteFont font;
+        MouseState mouseState;
 
         Button[] buttons = new Button[10];
         TextBox outputTextBox;
@@ -81,8 +81,14 @@ namespace SkipListVualizer
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            mouseState = Mouse.GetState();
 
             //Check if button was clicked to do stuff
+            
+            if (buttons[0].isClicked(mouseState))
+            {
+                outputTextBox.SetText($"{buttons[0].GetText()}");
+            }
 
             // TODO: Add your update logic here
 

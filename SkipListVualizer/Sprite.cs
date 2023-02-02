@@ -45,6 +45,17 @@ namespace SkipListVualizer
         public Vector2 GetPosition()
         {
             return vector2;
-        }    
+        }
+
+        public string GetText()
+        {
+            return text;
+        }
+
+
+        public void SetText(string text)
+        {
+            this.text += text;
+        }
     }
 }
