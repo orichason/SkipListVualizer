@@ -24,6 +24,7 @@ namespace SkipListVualizer
 
         Button[] buttons = new Button[10];
         TextBox outputTextBox;
+        int output = 0;
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -35,7 +36,7 @@ namespace SkipListVualizer
             Random random = new Random();
 
             SkipList<int> List = new SkipList<int>(random);
-            
+
             base.Initialize();
         }
 
@@ -56,13 +57,13 @@ namespace SkipListVualizer
             int y = -buttonSize;
             for (int i = 0; i < buttons.Length; i++)
             {
-                if(i % 3 == 0)
+                if (i % 3 == 0)
                 {
                     x = startingX;
                     y += buttonSize;
                 }
 
-                buttons[i] = new Button(inputTexture, new Vector2(x,y), (float)buttonSize / inputTexture.Width , Color.Red, font, $"{i}", Color.White);
+                buttons[i] = new Button(inputTexture, new Vector2(x, y), (float)buttonSize / inputTexture.Width, Color.Red, font, $"{i}", Color.White);
                 x += buttonSize;
             }
             //Get position of last button to use for output's position
@@ -71,7 +72,7 @@ namespace SkipListVualizer
             //Output Text Box
             Texture2D outputTexture = Content.Load<Texture2D>("rectangle");
             const int outputTextBoxSize = 120;
-            outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20),(float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
+            outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
 
 
             // TODO: use this.Content to load your game content here
@@ -84,11 +85,17 @@ namespace SkipListVualizer
             mouseState = Mouse.GetState();
 
             //Check if button was clicked to do stuff
-            
-            if (buttons[0].isClicked(mouseState))
+            for (int i = 0; i < buttons.Length; i++)
             {
-                outputTextBox.SetText($"{buttons[0].GetText()}");
+                if (buttons[i].isClicked(mouseState))
+                {
+                    outputTextBox.SetText($"{buttons[i].GetTextString()}");
+                    output *= 10;
+                    output += buttons[i].GetTextInt();
+                }
             }
+
+
 
             // TODO: Add your update logic here
 

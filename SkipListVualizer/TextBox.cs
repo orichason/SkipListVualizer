@@ -12,10 +12,16 @@ namespace SkipListVualizer
 {
     internal class TextBox : Sprite
     {
-        public TextBox(Texture2D texture, Vector2 vector2, float scale, Color boxColor, SpriteFont font, string text, Color textColor) :
-             base(texture, vector2, scale, boxColor, font, text, textColor)
+        public TextBox(Texture2D texture, Vector2 position, float scale, Color boxColor, SpriteFont font, string text, Color textColor) :
+             base(texture, position, scale, boxColor, font, text, textColor)
         {
 
         }
+
+        public void SetText(string text)
+        {
+            this.Text += text;
+        }
+
     }
 }
