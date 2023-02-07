@@ -23,5 +23,10 @@ namespace SkipListVualizer
             this.Text += text;
         }
 
+        public void DeleteText()
+        {
+
+        }
+
     }
 }

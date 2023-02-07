@@ -29,8 +29,8 @@ namespace SkipListVualizer
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 900;
+            //graphics.PreferredBackBufferWidth = 1600;
+            //graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
 
             Random random = new Random();
@@ -71,7 +71,7 @@ namespace SkipListVualizer
 
             //Output Text Box
             Texture2D outputTexture = Content.Load<Texture2D>("rectangle");
-            const int outputTextBoxSize = 120;
+            const int outputTextBoxSize = 150;
             outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
 
 
