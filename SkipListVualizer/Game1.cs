@@ -21,16 +21,21 @@ namespace SkipListVualizer
         }
         SpriteFont font;
         MouseState mouseState;
+        KeyboardState previousKeyState = Keyboard.GetState();
 
         Button[] buttons = new Button[10];
         TextBox outputTextBox;
         int output = 0;
+
+        Button submitButton;
+
+        TextBox nodes;
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
 
-            //graphics.PreferredBackBufferWidth = 1600;
-            //graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
 
             Random random = new Random();
@@ -74,6 +79,7 @@ namespace SkipListVualizer
             const int outputTextBoxSize = 150;
             outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
 
+            submitButton = new Button(outputTexture, new Vector2(outputTextBox.GetPosition().X, outputTextBox.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Green, font, "Enter", Color.White);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,22 +89,38 @@ namespace SkipListVualizer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             mouseState = Mouse.GetState();
+            KeyboardState currentKeyState = Keyboard.GetState();
 
             //Check if button was clicked to do stuff
             for (int i = 0; i < buttons.Length; i++)
             {
                 if (buttons[i].isClicked(mouseState))
                 {
-                    outputTextBox.SetText($"{buttons[i].GetTextString()}");
+                    outputTextBox.AddText($"{buttons[i].GetTextString()}");
                     output *= 10;
                     output += buttons[i].GetTextInt();
                 }
+            }
+
+            if ((previousKeyState.IsKeyUp(Keys.Back) && currentKeyState.IsKeyDown(Keys.Back)) ||
+                (previousKeyState.IsKeyUp(Keys.Delete) && currentKeyState.IsKeyDown(Keys.Delete)))
+            {
+                output /= 10;
+                if (output == 0) outputTextBox.SetText("");
+
+                else outputTextBox.SetText(output.ToString());
+            }
+
+            if (submitButton.isClicked(mouseState))
+            {
+                nodes = new TextBox(Content.Load<Texture2D>("circle"), new Vector2(30, 30), 0.5F, Color.Black, font, output.ToString(), Color.White);    
             }
 
 
 
             // TODO: Add your update logic here
 
+            previousKeyState = Keyboard.GetState();
             base.Update(gameTime);
         }
 
@@ -118,9 +140,10 @@ namespace SkipListVualizer
             {
                 buttons[i].Draw(spriteBatch);
             }
+            nodes.Draw(spriteBatch);
 
             outputTextBox.Draw(spriteBatch);
-
+            submitButton.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

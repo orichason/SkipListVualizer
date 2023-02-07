@@ -18,14 +18,14 @@ namespace SkipListVualizer
 
         }
 
-        public void SetText(string text)
+        public void AddText(string text)
         {
             this.Text += text;
         }
 
-        public void DeleteText()
+        public void SetText(string text)
         {
-
+            this.Text = text; 
         }
 
     }
