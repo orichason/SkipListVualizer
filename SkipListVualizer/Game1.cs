@@ -34,8 +34,8 @@ namespace SkipListVualizer
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 900;
+            //graphics.PreferredBackBufferWidth = 1600;
+            //graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
 
             Random random = new Random();
@@ -118,6 +118,7 @@ namespace SkipListVualizer
             if (submitButton.isClicked(mouseState))
             {
                 userList.Insert(output);
+
             }
 
 
