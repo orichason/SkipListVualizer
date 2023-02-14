@@ -9,6 +9,7 @@ namespace SkipListVualizer
         Node<T> head;
         Random random;
 
+        int Height { public get; private set; }
         public SkipList(Random random)
         {
             head = new Node<T>(default);
@@ -24,11 +25,11 @@ namespace SkipListVualizer
         public void Insert(T value)
         {
             Node<T> addingNode = new Node<T>(value);
-            int height = 1;
+            Height = 1;
 
             while (GetRandomHeight() != 2)
             {
-                Node<T> newNode = new Node<T>(value, ++height);
+                Node<T> newNode = new Node<T>(value, ++Height);
                 newNode.Below = addingNode;
                 addingNode = newNode;
                 if (addingNode.Height.CompareTo(head.Height) > 0)
@@ -62,7 +63,6 @@ namespace SkipListVualizer
                     else
                     {
                         current = current.Below;
-
                     }
                 }
             }
