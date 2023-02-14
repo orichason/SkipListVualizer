@@ -9,12 +9,12 @@ namespace SkipListVualizer
         Node<T> head;
         Random random;
 
-        int Height { public get; private set; }
+        public int Height { get; private set; }
         public SkipList(Random random)
         {
             head = new Node<T>(default);
             this.random = random;
-
+            
         }
 
         private int GetRandomHeight()

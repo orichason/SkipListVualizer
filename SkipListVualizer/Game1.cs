@@ -29,18 +29,18 @@ namespace SkipListVualizer
 
         Button submitButton;
 
-        TextBox nodes;
+        SkipList<int> userList;
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
 
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 900;
+            //graphics.PreferredBackBufferWidth = 1600;
+            //graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
 
             Random random = new Random();
 
-            SkipList<int> List = new SkipList<int>(random);
+            userList = new SkipList<int>(random); //Use SkipList to display
 
             base.Initialize();
         }
@@ -87,9 +87,13 @@ namespace SkipListVualizer
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
+
             mouseState = Mouse.GetState();
             KeyboardState currentKeyState = Keyboard.GetState();
+            //drawNode = false;
 
             //Check if button was clicked to do stuff
             for (int i = 0; i < buttons.Length; i++)
@@ -113,7 +117,8 @@ namespace SkipListVualizer
 
             if (submitButton.isClicked(mouseState))
             {
-                nodes = new TextBox(Content.Load<Texture2D>("circle"), new Vector2(30, 30), 0.5F, Color.Black, font, output.ToString(), Color.White);    
+                userList.Insert(output);
+
             }
 
 
@@ -140,7 +145,6 @@ namespace SkipListVualizer
             {
                 buttons[i].Draw(spriteBatch);
             }
-            nodes.Draw(spriteBatch);
 
             outputTextBox.Draw(spriteBatch);
             submitButton.Draw(spriteBatch);
