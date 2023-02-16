@@ -52,7 +52,7 @@ namespace SkipListVualizer
             //Uploading image & font files
             font = Content.Load<SpriteFont>("Font");
             Texture2D inputTexture = Content.Load<Texture2D>("button");
-
+      
             const int buttonSize = 80;
 
             int startingX = GraphicsDevice.Viewport.Width - buttonSize * 3;
@@ -145,6 +145,11 @@ namespace SkipListVualizer
             {
                 buttons[i].Draw(spriteBatch);
             }
+
+            //Create an array that stores the last position of the x. Index represents the row (bottom row is [0])
+            //Start with drawing linked list of bottom row of skip list.
+          
+
 
             outputTextBox.Draw(spriteBatch);
             submitButton.Draw(spriteBatch);

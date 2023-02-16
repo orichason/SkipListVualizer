@@ -6,13 +6,13 @@ namespace SkipListVualizer
 {
     public class SkipList<T> where T : IComparable
     {
-        Node<T> head;
+        public Node<T> Head;
         Random random;
 
         public int Height { get; private set; }
         public SkipList(Random random)
         {
-            head = new Node<T>(default);
+            Head = new Node<T>(default);
             this.random = random;
             
         }
@@ -32,16 +32,16 @@ namespace SkipListVualizer
                 Node<T> newNode = new Node<T>(value, ++Height);
                 newNode.Below = addingNode;
                 addingNode = newNode;
-                if (addingNode.Height.CompareTo(head.Height) > 0)
+                if (addingNode.Height.CompareTo(Head.Height) > 0)
                 {
-                    Node<T> newHead = new Node<T>(default, head.Height + 1);
-                    newHead.Below = head;
-                    head = newHead;
+                    Node<T> newHead = new Node<T>(default, Head.Height + 1);
+                    newHead.Below = Head;
+                    Head = newHead;
                     break;
                 }
             }
 
-            Node<T> current = head;
+            Node<T> current = Head;
 
             while (current != null)
             {
