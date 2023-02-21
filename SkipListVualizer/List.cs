@@ -14,7 +14,7 @@ namespace SkipListVualizer
         {
             Head = new Node<T>(default);
             this.random = random;
-            
+
         }
 
         private int GetRandomHeight()
@@ -45,26 +45,20 @@ namespace SkipListVualizer
 
             while (current != null)
             {
-                if (current.Right == null)
+                while (current.Right != null && addingNode.Value.CompareTo(current.Right.Value) > 0)
                 {
+                    current = current.Right;
+                }
+
+                if (current.Height == addingNode.Height)
+                {
+                    addingNode.Right = current.Right;
                     current.Right = addingNode;
                     addingNode = addingNode.Below;
-                    current = current.Below;
                 }
-                else
-                {
-                    if (current.Right.Value.CompareTo(addingNode.Value) > 0)
-                    {
-                        current.Right = addingNode;
-                        addingNode = addingNode.Below;
-                        current = current.Below;
-                    }
 
-                    else
-                    {
-                        current = current.Below;
-                    }
-                }
+                current = current.Below;
+
             }
         }
 

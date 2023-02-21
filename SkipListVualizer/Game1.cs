@@ -10,6 +10,25 @@ namespace SkipListVualizer
     //dotnet tool install -g dontet-mgcb
     public class Game1 : Game
     {
+        public T[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
+        {
+            T[] valueArray = new T[10];
+            Node<T> current = userList.Head;
+            while(current.Below != null)
+            {
+                current = current.Below;
+            }
+            
+            for (int i = 0; current.Right != null; i++)
+            {
+                current = current.Right;
+                valueArray[i] = current.Value;
+
+            }
+
+            return valueArray;
+        }
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -34,8 +53,8 @@ namespace SkipListVualizer
         {
             // TODO: Add your initialization logic here
 
-            //graphics.PreferredBackBufferWidth = 1600;
-            //graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
             graphics.ApplyChanges();
 
             Random random = new Random();
@@ -148,7 +167,8 @@ namespace SkipListVualizer
 
             //Create an array that stores the last position of the x. Index represents the row (bottom row is [0])
             //Start with drawing linked list of bottom row of skip list.
-          
+
+            int[] userArray = GetVisualInformation(userList);
 
 
             outputTextBox.Draw(spriteBatch);
