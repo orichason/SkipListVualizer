@@ -4,28 +4,42 @@ using Microsoft.Xna.Framework.Input;
 
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
+using System.Text;
 
 namespace SkipListVualizer
 {
     //dotnet tool install -g dontet-mgcb
     public class Game1 : Game
     {
-        public T[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
+        public Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
         {
-            T[] valueArray = new T[10];
+            Node<T>[] valueArray = new Node<T>[userList.Count];
             Node<T> current = userList.Head;
+
+            int i;
+
+            Stack<Node<T>> SentinalStack = new Stack<Node<T>>();
+
             while(current.Below != null)
             {
                 current = current.Below;
+                SentinalStack.Push(current);
             }
             
-            for (int i = 0; current.Right != null; i++)
+            for (i = 0; current.Right != null; i++)
             {
+                valueArray[i] = current;
                 current = current.Right;
-                valueArray[i] = current.Value;
-
             }
 
+            SentinalStack.Pop();
+
+            while(SentinalStack.Count > 0)
+            {
+                //Go through each sentinal to its right and replace that node with the one already in the array
+            }
+            
             return valueArray;
         }
 
@@ -49,6 +63,9 @@ namespace SkipListVualizer
         Button submitButton;
 
         SkipList<int> userList;
+        int[] userArray = new int[0];
+        Texture2D nodeTexture;
+
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -71,7 +88,8 @@ namespace SkipListVualizer
             //Uploading image & font files
             font = Content.Load<SpriteFont>("Font");
             Texture2D inputTexture = Content.Load<Texture2D>("button");
-      
+            nodeTexture = Content.Load<Texture2D>("circle");
+
             const int buttonSize = 80;
 
             int startingX = GraphicsDevice.Viewport.Width - buttonSize * 3;
@@ -95,8 +113,8 @@ namespace SkipListVualizer
 
             //Output Text Box
             Texture2D outputTexture = Content.Load<Texture2D>("rectangle");
-            const int outputTextBoxSize = 150;
-            outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
+            const float outputTextBoxSize = 150;
+            outputTextBox = new TextBox(outputTexture, new Vector2(lastButtonPosition.X, lastButtonPosition.Y + buttonSize + 20), outputTextBoxSize / outputTexture.Width, Color.Blue, font, "", Color.White);
 
             submitButton = new Button(outputTexture, new Vector2(outputTextBox.GetPosition().X, outputTextBox.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Green, font, "Enter", Color.White);
 
@@ -137,7 +155,7 @@ namespace SkipListVualizer
             if (submitButton.isClicked(mouseState))
             {
                 userList.Insert(output);
-
+                userArray = GetVisualInformation(userList);
             }
 
 
@@ -160,6 +178,7 @@ namespace SkipListVualizer
 
             spriteBatch.DrawString(font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);
 
+
             for (int i = 0; i < buttons.Length; i++)
             {
                 buttons[i].Draw(spriteBatch);
@@ -168,8 +187,22 @@ namespace SkipListVualizer
             //Create an array that stores the last position of the x. Index represents the row (bottom row is [0])
             //Start with drawing linked list of bottom row of skip list.
 
-            int[] userArray = GetVisualInformation(userList);
+            float x = 0;
+            int y = 0;
+            const float screenSize = 1250f;
 
+
+            for (int i = 0; i < userList.Count; i++)
+            {
+                float xScale = screenSize / userList.Count / nodeTexture.Width;
+                float yScale = (float)GraphicsDevice.Viewport.Height / userList.Count / nodeTexture.Height;
+
+                float maxSize = Math.Min(xScale, yScale);
+
+                TextBox node = new TextBox(nodeTexture, new Vector2(x , y), maxSize , Color.Black, font, userArray[i].ToString(), Color.White);
+                x += nodeTexture.Width * maxSize;
+                node.Draw(spriteBatch);
+            }            
 
             outputTextBox.Draw(spriteBatch);
             submitButton.Draw(spriteBatch);

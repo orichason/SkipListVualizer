@@ -8,13 +8,14 @@ namespace SkipListVualizer
     {
         public Node<T> Head;
         Random random;
+        public int Count { get; private set; }
 
         public int Height { get; private set; }
         public SkipList(Random random)
         {
             Head = new Node<T>(default);
             this.random = random;
-
+            Count = 0;
         }
 
         private int GetRandomHeight()
@@ -60,6 +61,7 @@ namespace SkipListVualizer
                 current = current.Below;
 
             }
+            Count += 1;
         }
 
     }
