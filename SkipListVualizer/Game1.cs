@@ -14,32 +14,50 @@ namespace SkipListVualizer
     {
         public Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
         {
-            Node<T>[] valueArray = new Node<T>[userList.Count];
+            Node<T>[] valueArray = new Node<T>[userList.Count + 1];
             Node<T> current = userList.Head;
 
             int i;
 
             Stack<Node<T>> SentinalStack = new Stack<Node<T>>();
 
-            while(current.Below != null)
-            {
-                current = current.Below;
+            while (current != null)
+            {   
                 SentinalStack.Push(current);
+                current = current.Below;
             }
-            
+
+            current = SentinalStack.Pop();
+
             for (i = 0; current.Right != null; i++)
             {
                 valueArray[i] = current;
                 current = current.Right;
             }
 
-            SentinalStack.Pop();
-
-            while(SentinalStack.Count > 0)
+            while (SentinalStack.Count > 0)
             {
                 //Go through each sentinal to its right and replace that node with the one already in the array
+                
+                current = SentinalStack.Pop();
+
+                while (current.Right != null)
+                {
+                    for (int j = 0; j < valueArray.Length; j++)
+                    {
+                        if (current.Below == valueArray[j])
+                        {
+                            valueArray[j] = current;
+                            break;
+                        }
+                    }
+                    current = current.Right;
+
+                }
+
+
             }
-            
+
             return valueArray;
         }
 
@@ -63,7 +81,7 @@ namespace SkipListVualizer
         Button submitButton;
 
         SkipList<int> userList;
-        int[] userArray = new int[0];
+        Node<int>[] userArray = new Node<int>[0];
         Texture2D nodeTexture;
 
         protected override void Initialize()
@@ -118,6 +136,7 @@ namespace SkipListVualizer
 
             submitButton = new Button(outputTexture, new Vector2(outputTextBox.GetPosition().X, outputTextBox.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Green, font, "Enter", Color.White);
 
+            userArray = GetVisualInformation(userList);
             // TODO: use this.Content to load your game content here
         }
 
@@ -199,10 +218,10 @@ namespace SkipListVualizer
 
                 float maxSize = Math.Min(xScale, yScale);
 
-                TextBox node = new TextBox(nodeTexture, new Vector2(x , y), maxSize , Color.Black, font, userArray[i].ToString(), Color.White);
+                TextBox node = new TextBox(nodeTexture, new Vector2(x, y), maxSize, Color.Black, font, userArray[i].ToString(), Color.White);
                 x += nodeTexture.Width * maxSize;
                 node.Draw(spriteBatch);
-            }            
+            }
 
             outputTextBox.Draw(spriteBatch);
             submitButton.Draw(spriteBatch);

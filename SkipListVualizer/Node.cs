@@ -22,5 +22,10 @@ namespace SkipListVualizer
         public Node(T value, int height)
         : this(value, null, null, height) { }
 
+
+        public override string ToString()
+        {
+            return $"Value = {Value} \nHeight = {Height}";
+        }
     }
 }
