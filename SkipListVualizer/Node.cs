@@ -25,7 +25,7 @@ namespace SkipListVualizer
 
         public override string ToString()
         {
-            return $"Value = {Value} \nHeight = {Height}";
+            return $"V {Value} \nH {Height}";
         }
     }
 }

@@ -16,7 +16,7 @@ namespace SkipListVualizer
         
         ButtonState previousPress;
         public Button(Texture2D texture, Vector2 position, float scale, Color color, SpriteFont font, string text, Color textColor) :
-             base(texture, position, scale, color, font, text, textColor)
+             base(texture, position, scale, color, font, text, 1, textColor)
         {
         }
 

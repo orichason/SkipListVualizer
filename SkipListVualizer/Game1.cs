@@ -12,55 +12,6 @@ namespace SkipListVualizer
     //dotnet tool install -g dontet-mgcb
     public class Game1 : Game
     {
-        public Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
-        {
-            Node<T>[] valueArray = new Node<T>[userList.Count + 1];
-            Node<T> current = userList.Head;
-
-            int i;
-
-            Stack<Node<T>> SentinalStack = new Stack<Node<T>>();
-
-            while (current != null)
-            {   
-                SentinalStack.Push(current);
-                current = current.Below;
-            }
-
-            current = SentinalStack.Pop();
-
-            for (i = 0; current.Right != null; i++)
-            {
-                valueArray[i] = current;
-                current = current.Right;
-            }
-
-            while (SentinalStack.Count > 0)
-            {
-                //Go through each sentinal to its right and replace that node with the one already in the array
-                
-                current = SentinalStack.Pop();
-
-                while (current.Right != null)
-                {
-                    for (int j = 0; j < valueArray.Length; j++)
-                    {
-                        if (current.Below == valueArray[j])
-                        {
-                            valueArray[j] = current;
-                            break;
-                        }
-                    }
-                    current = current.Right;
-
-                }
-
-
-            }
-
-            return valueArray;
-        }
-
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -83,7 +34,83 @@ namespace SkipListVualizer
         SkipList<int> userList;
         Node<int>[] userArray = new Node<int>[0];
         Texture2D nodeTexture;
+        List<TextBox> textBoxes = new List<TextBox>(0);
 
+        #region Skip list drawing functions
+
+        protected Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
+        {
+            Node<T>[] valueArray = new Node<T>[userList.Count + 1];
+            Node<T> current = userList.Head;
+
+            int i;
+
+            Stack<Node<T>> SentinalStack = new Stack<Node<T>>();
+
+            while (current != null)
+            {
+                SentinalStack.Push(current);
+                current = current.Below;
+            }
+
+            current = SentinalStack.Pop();
+
+            for (i = 0; current != null; i++)
+            {
+                valueArray[i] = current;
+                current = current.Right;
+            }
+
+            while (SentinalStack.Count > 0)
+            {
+                //Go through each sentinal to its right and replace that node with the one already in the array
+
+                current = SentinalStack.Pop();
+
+                while (current != null)
+                {
+                    for (int j = 0; j < valueArray.Length; j++)
+                    {
+                        if (current.Below == valueArray[j])
+                        {
+                            valueArray[j] = current;
+                            break;
+                        }
+                    }
+                    current = current.Right;
+                }
+            }
+            return valueArray;
+        }
+
+        protected void GenerateUserArray()
+        {
+            textBoxes.Clear();
+
+            float x = 0;
+            const float screenSizeX = 1250f;
+            float screenSizeY = (float)GraphicsDevice.Viewport.Height;
+
+            float xScale = screenSizeX / userArray.Length / nodeTexture.Width;
+            float yScale = screenSizeY / userArray.Length / nodeTexture.Height;
+
+            float maxSize = Math.Min(xScale, yScale);
+
+            for (int i = 0; i < userList.Count + 1; i++)
+            {
+                float y = screenSizeY - (nodeTexture.Height * maxSize);
+                for (int j = 1; j < userArray[i].Height + 1; j++)
+                {
+          
+                    TextBox node = new TextBox(nodeTexture, new Vector2(x, y), maxSize, Color.Black, font,$"V: {userArray[i].Value} \n H: {j}", Color.White);
+                    y -= nodeTexture.Height * maxSize;
+                    textBoxes.Add(node);
+                }
+      
+                x += nodeTexture.Width * maxSize;
+            }
+        }
+        #endregion
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -137,6 +164,7 @@ namespace SkipListVualizer
             submitButton = new Button(outputTexture, new Vector2(outputTextBox.GetPosition().X, outputTextBox.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Green, font, "Enter", Color.White);
 
             userArray = GetVisualInformation(userList);
+            GenerateUserArray();
             // TODO: use this.Content to load your game content here
         }
 
@@ -175,6 +203,7 @@ namespace SkipListVualizer
             {
                 userList.Insert(output);
                 userArray = GetVisualInformation(userList);
+                GenerateUserArray();
             }
 
 
@@ -203,24 +232,9 @@ namespace SkipListVualizer
                 buttons[i].Draw(spriteBatch);
             }
 
-            //Create an array that stores the last position of the x. Index represents the row (bottom row is [0])
-            //Start with drawing linked list of bottom row of skip list.
-
-            float x = 0;
-            int y = 0;
-            const float screenSize = 1250f;
-
-
-            for (int i = 0; i < userList.Count; i++)
+            for (int i = 0; i < textBoxes.Count; i++)
             {
-                float xScale = screenSize / userList.Count / nodeTexture.Width;
-                float yScale = (float)GraphicsDevice.Viewport.Height / userList.Count / nodeTexture.Height;
-
-                float maxSize = Math.Min(xScale, yScale);
-
-                TextBox node = new TextBox(nodeTexture, new Vector2(x, y), maxSize, Color.Black, font, userArray[i].ToString(), Color.White);
-                x += nodeTexture.Width * maxSize;
-                node.Draw(spriteBatch);
+                textBoxes[i].Draw(spriteBatch);
             }
 
             outputTextBox.Draw(spriteBatch);

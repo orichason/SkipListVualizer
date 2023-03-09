@@ -18,10 +18,12 @@ namespace SkipListVualizer
         Color color;
         SpriteFont font;
         Color textColor;
+        float textScale;
+
 
         protected string Text;
 
-        public Sprite(Texture2D texture, Vector2 position, float scale, Color color,SpriteFont font, string text, Color textColor)
+        public Sprite(Texture2D texture, Vector2 position, float scale, Color color,SpriteFont font, string text, float textScale, Color textColor)
         {
             this.texture = texture ?? throw new ArgumentNullException(nameof(texture));
             this.position = position;
@@ -30,6 +32,7 @@ namespace SkipListVualizer
             this.font = font;
             this.Text = text;
             this.textColor = textColor; 
+            this.textScale = textScale;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -40,7 +43,7 @@ namespace SkipListVualizer
 
             Vector2 newCoord = position + new Vector2(texture.Width, texture.Height) * scale / 2 - textSize / 2;
 
-            spriteBatch.DrawString(font, Text, newCoord , textColor);
+            spriteBatch.DrawString(font, Text, newCoord , textColor, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
         }
 
         public Rectangle GetBounds()
