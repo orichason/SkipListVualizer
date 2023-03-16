@@ -14,7 +14,7 @@ namespace SkipListVualizer
             get
             {
                 return Head.Height;
-            }           
+            }
         }
         public SkipList(Random random)
         {
@@ -67,6 +67,30 @@ namespace SkipListVualizer
 
             }
             Count += 1;
+        }
+
+        public void Delete(T value)
+        {
+            int changesMade = 0;
+            Node<T> current = Head;
+
+            while (current != null)
+            {
+                while (current.Right != null && value.CompareTo(current.Right.Value) > 0)
+                {
+                    current = current.Right;
+                }
+
+                if (current.Right != null && current.Right.Value.CompareTo(value) == 0)
+                {
+                    changesMade = 1;
+                    current.Right = current.Right.Right;
+                }
+
+                current = current.Below;
+
+            }
+            Count -= changesMade;
         }
 
     }

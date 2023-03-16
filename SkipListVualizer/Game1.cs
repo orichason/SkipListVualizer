@@ -101,8 +101,7 @@ namespace SkipListVualizer
                 float y = screenSizeY - (nodeTexture.Height * maxSize);
                 for (int j = 1; j < userArray[i].Height + 1; j++)
                 {
-          
-                    TextBox node = new TextBox(nodeTexture, new Vector2(x, y), maxSize, Color.Black, font,$"V: {userArray[i].Value} \n H: {j}", Color.White);
+                    TextBox node = new TextBox(nodeTexture, new Vector2(x, y), maxSize, Color.Black, font, userArray[i].Value.ToString(), Color.White);
                     y -= nodeTexture.Height * maxSize;
                     textBoxes.Add(node);
                 }
@@ -180,13 +179,15 @@ namespace SkipListVualizer
             //drawNode = false;
 
             //Check if button was clicked to do stuff
+
             for (int i = 0; i < buttons.Length; i++)
             {
                 if (buttons[i].isClicked(mouseState))
                 {
-                    outputTextBox.AddText($"{buttons[i].GetTextString()}");
+                    //outputTextBox.AddText($"{buttons[i].GetTextString()}");
                     output *= 10;
                     output += buttons[i].GetTextInt();
+                    outputTextBox.SetText(output.ToString());
                 }
             }
 
@@ -204,6 +205,8 @@ namespace SkipListVualizer
                 userList.Insert(output);
                 userArray = GetVisualInformation(userList);
                 GenerateUserArray();
+                outputTextBox.SetText("0");
+                output = 0;
             }
 
 

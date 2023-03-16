@@ -39,8 +39,8 @@ namespace SkipListVualizer
 
             float textureWidth = texture.Width * scale;
             float textureHeight = texture.Height * scale;
-            float textWidth = textLength.X * scale;
-            float textHeight = textLength.Y * scale;
+            float textWidth = textLength.X;
+            float textHeight = textLength.Y;
 
             if (textureWidth < textWidth || textureHeight < textHeight)
             {

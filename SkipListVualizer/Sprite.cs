@@ -41,9 +41,9 @@ namespace SkipListVualizer
             
             Vector2 textSize = font.MeasureString(Text);
 
-            Vector2 newCoord = position + new Vector2(texture.Width, texture.Height) * scale / 2 - textSize / 2;
+            Vector2 newCoord = position + new Vector2(texture.Width, texture.Height) * scale / 2;            
 
-            spriteBatch.DrawString(font, Text, newCoord , textColor, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, Text, newCoord , textColor, 0, textSize / 2, textScale, SpriteEffects.None, 0);
         }
 
         public Rectangle GetBounds()
