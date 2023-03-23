@@ -233,7 +233,7 @@ namespace SkipListVualizer
 
             if(undoButton.isClicked(mouseState))
             {
-                RedoStack.Push(UndoStack.Pop());
+                RedoStack.Push(UndoStack.Pop()); // finished here
             }
 
             if(deleteButton.isClicked(mouseState))
