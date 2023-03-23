@@ -28,7 +28,7 @@ namespace SkipListVualizer
             return random.Next(1, 3);
         }
 
-        public void Insert(T value)
+        public int Insert(T value)
         {
             Node<T> addingNode = new Node<T>(value);
             int height = 1;
@@ -67,6 +67,8 @@ namespace SkipListVualizer
 
             }
             Count += 1;
+
+            return height;
         }
 
         public void Delete(T value)

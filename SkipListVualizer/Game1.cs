@@ -5,10 +5,16 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace SkipListVualizer
 {
+    enum OPERATIONS
+    {
+        Add,
+        Remove
+    }
     //dotnet tool install -g dontet-mgcb
     public class Game1 : Game
     {
@@ -30,16 +36,25 @@ namespace SkipListVualizer
         int output = 0;
 
         Button submitButton;
+        Button deleteButton;
+        Button undoButton;
+        Button redoButton;
 
         SkipList<int> userList;
         Node<int>[] userArray = new Node<int>[0];
         Texture2D nodeTexture;
         List<TextBox> textBoxes = new List<TextBox>(0);
 
+        Stack<(OPERATIONS Op, Node<int> node)> UndoStack = new ();
+
+        Stack<(OPERATIONS Op, Node<int> node)> RedoStack = new ();
+
+
         #region Skip list drawing functions
 
         protected Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
-        {
+        {            
+            
             Node<T>[] valueArray = new Node<T>[userList.Count + 1];
             Node<T> current = userList.Head;
 
@@ -83,7 +98,7 @@ namespace SkipListVualizer
             return valueArray;
         }
 
-        protected void GenerateUserArray()
+        protected void GenerateTextBoxList()
         {
             textBoxes.Clear();
 
@@ -162,8 +177,14 @@ namespace SkipListVualizer
 
             submitButton = new Button(outputTexture, new Vector2(outputTextBox.GetPosition().X, outputTextBox.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Green, font, "Enter", Color.White);
 
+            deleteButton = new Button(outputTexture, new Vector2(submitButton.GetPosition().X, submitButton.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Black, font, "Delete", Color.White);
+
+            undoButton = new Button(outputTexture, new Vector2(1200, 50), (float)outputTextBoxSize / outputTexture.Width, Color.Red, font, "Undo", Color.Red);
+
+            redoButton = new Button(outputTexture, new Vector2(1200, undoButton.GetPosition().Y + buttonSize + 20), (float)outputTextBoxSize / outputTexture.Width, Color.Red, font, "Redo", Color.Red);
+
             userArray = GetVisualInformation(userList);
-            GenerateUserArray();
+            GenerateTextBoxList();
             // TODO: use this.Content to load your game content here
         }
 
@@ -202,14 +223,25 @@ namespace SkipListVualizer
 
             if (submitButton.isClicked(mouseState))
             {
-                userList.Insert(output);
+                int height = userList.Insert(output);
+                UndoStack.Push((OPERATIONS.Add, new Node<int>(output, height)));
                 userArray = GetVisualInformation(userList);
-                GenerateUserArray();
+                GenerateTextBoxList();
                 outputTextBox.SetText("0");
                 output = 0;
             }
 
+            if(undoButton.isClicked(mouseState))
+            {
+                RedoStack.Push(UndoStack.Pop());
+            }
 
+            if(deleteButton.isClicked(mouseState))
+            {
+                userList.Delete(output);
+                userArray = GetVisualInformation(userList);
+                GenerateTextBoxList();
+            }
 
             // TODO: Add your update logic here
 
@@ -224,11 +256,11 @@ namespace SkipListVualizer
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+           
             spriteBatch.Begin();
 
             spriteBatch.DrawString(font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);
-
+            spriteBatch.DrawString(font, $"Count: {userList.Count}", new Vector2(1200, 10), Color.Black);
 
             for (int i = 0; i < buttons.Length; i++)
             {
@@ -242,6 +274,10 @@ namespace SkipListVualizer
 
             outputTextBox.Draw(spriteBatch);
             submitButton.Draw(spriteBatch);
+            deleteButton.Draw(spriteBatch);
+            undoButton.Draw(spriteBatch);
+            redoButton.Draw(spriteBatch);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
