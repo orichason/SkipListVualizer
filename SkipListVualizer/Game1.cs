@@ -194,7 +194,6 @@ namespace SkipListVualizer
             {
                 Exit();
             }
-
             mouseState = Mouse.GetState();
             KeyboardState currentKeyState = Keyboard.GetState();
             //drawNode = false;
@@ -233,11 +232,58 @@ namespace SkipListVualizer
 
             if(undoButton.isClicked(mouseState))
             {
-                RedoStack.Push(UndoStack.Pop()); // finished here
+                if (UndoStack.Count > 0)
+                {
+                    RedoStack.Push(UndoStack.Pop());
+                }
+                
+                Node<int> node = new Node<int>(RedoStack.Peek().node.Value, RedoStack.Peek().node.Height);
+
+                    
+                if(RedoStack.Peek().Op == OPERATIONS.Remove)
+                {
+                    userList.Insert2(node.Value, node.Height);
+                    userArray = GetVisualInformation(userList);
+                    GenerateTextBoxList();
+                }
+
+                else if(RedoStack.Peek().Op == OPERATIONS.Add)
+                {
+                    userList.Delete(node.Value);
+                    userArray = GetVisualInformation(userList);
+                    GenerateTextBoxList();
+                }
+            }
+
+            if(redoButton.isClicked(mouseState))
+            {
+                if (RedoStack.Count > 0)
+                {
+                    UndoStack.Push(RedoStack.Pop());
+
+
+                    Node<int> node = new Node<int>(UndoStack.Peek().node.Value, UndoStack.Peek().node.Height);
+
+                    if (UndoStack.Peek().Op == OPERATIONS.Remove)
+                    {
+                        userList.Delete(node.Value);
+                        userArray = GetVisualInformation(userList);
+                        GenerateTextBoxList();
+                    }
+
+                    else if (UndoStack.Peek().Op == OPERATIONS.Add)
+                    {
+                        userList.Insert2(node.Value, node.Height);
+                        userArray = GetVisualInformation(userList);
+                        GenerateTextBoxList();
+                    }
+                }
             }
 
             if(deleteButton.isClicked(mouseState))
             {
+                int height = userList.Delete(output);
+                UndoStack.Push((OPERATIONS.Remove, new Node<int>(output, height)));
                 userList.Delete(output);
                 userArray = GetVisualInformation(userList);
                 GenerateTextBoxList();

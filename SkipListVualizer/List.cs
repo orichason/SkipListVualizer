@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SkipListVualizer
 {
@@ -56,6 +58,11 @@ namespace SkipListVualizer
                     current = current.Right;
                 }
 
+                //finished here... dont allow duplicates or allow and increment a counter for the node
+                if(current.Value.CompareTo(addingNode.Value) == 0)
+                {
+                }
+
                 if (current.Height == addingNode.Height)
                 {
                     addingNode.Right = current.Right;
@@ -71,7 +78,41 @@ namespace SkipListVualizer
             return height;
         }
 
-        public void Delete(T value)
+        public void Insert2(T value, int height)
+        {
+            int count = height;
+            Node<T> addingNode = new Node<T>(value, height);
+            count--;
+
+            while(count > 0)
+            {
+                addingNode.Below = new Node<T>(value, count); 
+                count--;
+            }
+
+            Node<T> current = Head;
+
+            while (current != null)
+            {
+                while (current.Right != null && addingNode.Value.CompareTo(current.Right.Value) > 0)
+                {
+                    current = current.Right;
+                }
+
+                if (current.Height == addingNode.Height)
+                {
+                    addingNode.Right = current.Right;
+                    current.Right = addingNode;
+                    addingNode = addingNode.Below;
+                }
+
+                current = current.Below;
+
+            }
+            Count += 1;
+        }
+
+        public int Delete(T value)
         {
             int changesMade = 0;
             Node<T> current = Head;
@@ -93,7 +134,9 @@ namespace SkipListVualizer
 
             }
             Count -= changesMade;
-        }
 
+            return Height;
+        }
+        
     }
 }
