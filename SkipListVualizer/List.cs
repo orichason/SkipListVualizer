@@ -58,11 +58,6 @@ namespace SkipListVualizer
                     current = current.Right;
                 }
 
-                //finished here... dont allow duplicates or allow and increment a counter for the node
-                if (current.Value.CompareTo(addingNode.Value) == 0)
-                {
-                }
-
                 if (current.Height == addingNode.Height)
                 {
                     addingNode.Right = current.Right;
@@ -119,7 +114,7 @@ namespace SkipListVualizer
             Count += 1;
         }
 
-        public int Delete(T value)
+        public bool Delete(T value)
         {
             int changesMade = 0;
             Node<T> current = Head;
@@ -140,9 +135,10 @@ namespace SkipListVualizer
                 current = current.Below;
 
             }
+            //finished here... return true when deleted something, fasle when didnt
             Count -= changesMade;
 
-            return Height;
+            return false;
         }
 
         public void ShrinkHead()
