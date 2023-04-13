@@ -35,7 +35,7 @@ namespace SkipListVualizer
             Node<T> addingNode = new Node<T>(value);
             int height = 1;
 
-            while (GetRandomHeight() != 2)
+            while (/*GetRandomHeight() != 2*/ true)
             {
                 Node<T> newNode = new Node<T>(value, ++height);
                 newNode.Below = addingNode;
@@ -59,7 +59,7 @@ namespace SkipListVualizer
                 }
 
                 //finished here... dont allow duplicates or allow and increment a counter for the node
-                if(current.Value.CompareTo(addingNode.Value) == 0)
+                if (current.Value.CompareTo(addingNode.Value) == 0)
                 {
                 }
 
@@ -78,15 +78,22 @@ namespace SkipListVualizer
             return height;
         }
 
-        public void Insert2(T value, int height)
+        public void Insert(T value, int height)
         {
+            if (height > Head.Height)
+            {
+                Node<T> newHead = new Node<T>(default, height);
+                newHead.Below = Head;
+                Head = newHead; 
+            }
+
             int count = height;
             Node<T> addingNode = new Node<T>(value, height);
             count--;
 
-            while(count > 0)
+            while (count > 0)
             {
-                addingNode.Below = new Node<T>(value, count); 
+                addingNode.Below = new Node<T>(value, count);
                 count--;
             }
 
@@ -137,6 +144,10 @@ namespace SkipListVualizer
 
             return Height;
         }
-        
+
+        public void ShrinkHead()
+        {
+            Head = Head.Below;
+        }
     }
 }

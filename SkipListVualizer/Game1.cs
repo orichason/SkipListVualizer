@@ -45,9 +45,9 @@ namespace SkipListVualizer
         Texture2D nodeTexture;
         List<TextBox> textBoxes = new List<TextBox>(0);
 
-        Stack<(OPERATIONS Op, Node<int> node)> UndoStack = new ();
+        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> UndoStack = new ();
 
-        Stack<(OPERATIONS Op, Node<int> node)> RedoStack = new ();
+        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> RedoStack = new ();
 
 
         #region Skip list drawing functions
@@ -222,8 +222,10 @@ namespace SkipListVualizer
 
             if (submitButton.isClicked(mouseState))
             {
+                int previousHeadHeight = userList.Head.Height;
                 int height = userList.Insert(output);
-                UndoStack.Push((OPERATIONS.Add, new Node<int>(output, height)));
+                bool headChanged = userList.Head.Height > previousHeadHeight;
+                UndoStack.Push((OPERATIONS.Add, new Node<int>(output, height), headChanged));
                 userArray = GetVisualInformation(userList);
                 GenerateTextBoxList();
                 outputTextBox.SetText("0");
@@ -242,7 +244,7 @@ namespace SkipListVualizer
                     
                 if(RedoStack.Peek().Op == OPERATIONS.Remove)
                 {
-                    userList.Insert2(node.Value, node.Height);
+                    userList.Insert(node.Value, node.Height);
                     userArray = GetVisualInformation(userList);
                     GenerateTextBoxList();
                 }
@@ -250,6 +252,10 @@ namespace SkipListVualizer
                 else if(RedoStack.Peek().Op == OPERATIONS.Add)
                 {
                     userList.Delete(node.Value);
+                    if (RedoStack.Peek().headGrew)
+                    {
+                        userList.ShrinkHead();
+                    }
                     userArray = GetVisualInformation(userList);
                     GenerateTextBoxList();
                 }
@@ -273,7 +279,7 @@ namespace SkipListVualizer
 
                     else if (UndoStack.Peek().Op == OPERATIONS.Add)
                     {
-                        userList.Insert2(node.Value, node.Height);
+                        userList.Insert(node.Value, node.Height);
                         userArray = GetVisualInformation(userList);
                         GenerateTextBoxList();
                     }
@@ -283,7 +289,7 @@ namespace SkipListVualizer
             if(deleteButton.isClicked(mouseState))
             {
                 int height = userList.Delete(output);
-                UndoStack.Push((OPERATIONS.Remove, new Node<int>(output, height)));
+                UndoStack.Push((OPERATIONS.Remove, new Node<int>(output, height), false));
                 userList.Delete(output);
                 userArray = GetVisualInformation(userList);
                 GenerateTextBoxList();
