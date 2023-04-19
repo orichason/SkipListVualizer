@@ -45,16 +45,16 @@ namespace SkipListVualizer
         Texture2D nodeTexture;
         List<TextBox> textBoxes = new List<TextBox>(0);
 
-        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> UndoStack = new ();
+        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> UndoStack = new();
 
-        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> RedoStack = new ();
+        Stack<(OPERATIONS Op, Node<int> node, bool headGrew)> RedoStack = new();
 
 
         #region Skip list drawing functions
 
         protected Node<T>[] GetVisualInformation<T>(SkipList<T> userList) where T : IComparable
-        {            
-            
+        {
+
             Node<T>[] valueArray = new Node<T>[userList.Count + 1];
             Node<T> current = userList.Head;
 
@@ -120,7 +120,7 @@ namespace SkipListVualizer
                     y -= nodeTexture.Height * maxSize;
                     textBoxes.Add(node);
                 }
-      
+
                 x += nodeTexture.Width * maxSize;
             }
         }
@@ -232,24 +232,21 @@ namespace SkipListVualizer
                 output = 0;
             }
 
-            if(undoButton.isClicked(mouseState))
+            if (undoButton.isClicked(mouseState) && UndoStack.Count > 0)
             {
-                if (UndoStack.Count > 0)
-                {
-                    RedoStack.Push(UndoStack.Pop());
-                }
-                
+                RedoStack.Push(UndoStack.Pop());
+
                 Node<int> node = new Node<int>(RedoStack.Peek().node.Value, RedoStack.Peek().node.Height);
 
-                    
-                if(RedoStack.Peek().Op == OPERATIONS.Remove)
+
+                if (RedoStack.Peek().Op == OPERATIONS.Remove)
                 {
                     userList.Insert(node.Value, node.Height);
                     userArray = GetVisualInformation(userList);
                     GenerateTextBoxList();
                 }
 
-                else if(RedoStack.Peek().Op == OPERATIONS.Add)
+                else if (RedoStack.Peek().Op == OPERATIONS.Add)
                 {
                     userList.Delete(node.Value);
                     if (RedoStack.Peek().headGrew)
@@ -261,7 +258,7 @@ namespace SkipListVualizer
                 }
             }
 
-            if(redoButton.isClicked(mouseState))
+            if (redoButton.isClicked(mouseState))
             {
                 if (RedoStack.Count > 0)
                 {
@@ -272,6 +269,12 @@ namespace SkipListVualizer
 
                     if (UndoStack.Peek().Op == OPERATIONS.Remove)
                     {
+                        if (UndoStack.Peek().headGrew)
+                        {
+                            Node<int> newHead = new Node<int>(default);
+                            newHead.Below = userList.Head;
+                            userList.Head = newHead;
+                        }
                         userList.Delete(node.Value);
                         userArray = GetVisualInformation(userList);
                         GenerateTextBoxList();
@@ -286,11 +289,13 @@ namespace SkipListVualizer
                 }
             }
 
-            if(deleteButton.isClicked(mouseState))
+            if (deleteButton.isClicked(mouseState))
             {
                 int height = userList.Delete(output);
-                UndoStack.Push((OPERATIONS.Remove, new Node<int>(output, height), false));
-                userList.Delete(output);
+                if (height != -1)
+                {
+                    UndoStack.Push((OPERATIONS.Remove, new Node<int>(output, height), false));
+                }
                 userArray = GetVisualInformation(userList);
                 GenerateTextBoxList();
             }
@@ -308,7 +313,7 @@ namespace SkipListVualizer
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-           
+
             spriteBatch.Begin();
 
             spriteBatch.DrawString(font, mouseState.Position.ToString(), new Vector2(10, 10), Color.Black);

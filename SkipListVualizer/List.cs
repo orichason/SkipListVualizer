@@ -35,7 +35,7 @@ namespace SkipListVualizer
             Node<T> addingNode = new Node<T>(value);
             int height = 1;
 
-            while (/*GetRandomHeight() != 2*/ true)
+            while (GetRandomHeight() != 2)
             {
                 Node<T> newNode = new Node<T>(value, ++height);
                 newNode.Below = addingNode;
@@ -114,10 +114,11 @@ namespace SkipListVualizer
             Count += 1;
         }
 
-        public bool Delete(T value)
+        public int Delete(T value)
         {
             int changesMade = 0;
             Node<T> current = Head;
+            int tempHeight = 0;
 
             while (current != null)
             {
@@ -129,16 +130,21 @@ namespace SkipListVualizer
                 if (current.Right != null && current.Right.Value.CompareTo(value) == 0)
                 {
                     changesMade = 1;
+                    tempHeight++;
                     current.Right = current.Right.Right;
                 }
 
                 current = current.Below;
 
             }
-            //finished here... return true when deleted something, fasle when didnt
-            Count -= changesMade;
 
-            return false;
+            Count -= changesMade;
+            if (changesMade > 0)
+            {
+                return tempHeight;
+            }
+
+            return -1;
         }
 
         public void ShrinkHead()
